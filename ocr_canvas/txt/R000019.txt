@@ -1,0 +1,31 @@
+Y=382.5 X=[324-1074] DENNER
+Y=576.5 X=[231-704] Buchs AG Wyne Bresteneggstrasse 9
+Y=673.5 X=[230-551] 5033 Buchs AG
+Y=735.0 X=[230-553] 058 999 03 22
+Y=860.2 X=[178-499] M Bezeichnung
+Y=858.5 X=[1070-1228] Betrag
+Y=985.9 X=[172-899] C Denner Tragtasche R - PE 1Stk
+Y=980.5 X=[1070-1173] 1.20
+Y=1047.2 X=[171-924] B Lauge mit IPS Weizenmehl 80g
+Y=1105.0 X=[213-523] Aktuellstatt
+Y=1109.5 X=[818-925] 0.90
+Y=1107.0 X=[1068-1176] 0.70
+Y=1169.4 X=[164-924] B IP - Suisse Zwiebeln Offenv kg
+Y=1235.5 X=[212-633] 1.392 Kg x 1.30 CHF / Kg
+Y=1230.5 X=[1075-1174] 1.80
+Y=1292.9 X=[160-892] C Denner Aluminium - Folie 1Stk
+Y=1295.0 X=[1069-1175] 2.65
+Y=1353.5 X=[158-697] B D - Vollmilch Past 1L
+Y=1421.4 X=[203-437] 2 X 1.40 CHF
+Y=1419.0 X=[1070-1177] 2.80
+Y=1480.0 X=[157-917] B Caffé Latte Cappuccino 230ml
+Y=1482.0 X=[1069-1177] 2.15
+Y=1542.0 X=[157-920] B ültje Pistazien geröste 150g
+Y=1543.0 X=[1071-1173] 3.95
+Y=1599.9 X=[158-820] B Samichlaus Lebkuchen 90g
+Y=1666.9 X=[208-438] 5 X 1.25 CHF
+Y=1790.2 X=[163-612] Total CHF
+Y=1671.0 X=[1070-1172] 6.25
+Y=1795.0 X=[968-1217] 21.50
+Y=1971.0 X=[209-308] VISA
+Y=1973.0 X=[1040-1167] 21.50

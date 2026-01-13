@@ -1,0 +1,146 @@
+Du erhältst den Inhalt eines Kassenzettels als JSON.
+
+Das JSON ist eine rein geometrische Projektion des Belegs.
+Es enthält KEINE vorab interpretierte Semantik.
+
+========================
+EINGABEFORMAT
+========================
+
+{
+  "x_buckets": [
+    { "x_bucket": <int>, "x_center": <number> }
+  ],
+  "rows": [
+    {
+      "row_id": <int>,
+      "y_center": <number>,
+      "cells": [
+        { "x_bucket": <int>, "text": <string> }
+      ]
+    }
+  ]
+}
+
+========================
+GRUNDREGEL
+========================
+
+Alle semantischen Entscheidungen müssen ausschließlich
+aus Textinhalt, relativer Position (x_bucket)
+und Wiederholung über mehrere Zeilen abgeleitet werden.
+
+========================
+1) HEADER-ANALYSE (VERPFLICHTEND)
+========================
+
+- Analysiere die oberen rows.
+- Erkenne, ob eine Headerzeile vorhanden ist.
+- Wenn ein Header vorhanden ist:
+  - bestimme explizit, welcher x_bucket die TOTAL-SPALTE darstellt
+  - Hinweise sind Begriffe wie:
+    "Total", "Total #", "Betrag", "Summe", "CHF Total"
+
+Die Header-Zuordnung ist verbindlich für alle folgenden Schritte.
+
+========================
+2) ARTIKELZEILEN
+========================
+
+- Artikelzeilen befinden sich unterhalb des Headers.
+- Eine Artikelzeile enthält:
+  - eine Artikelbeschreibung
+  - optional Mengen- oder Preisangaben
+
+Artikel dürfen NIEMALS verworfen werden,
+auch wenn kein Preis eindeutig bestimmbar ist.
+
+========================
+3) TOTAL_PRICE (ARTIKEL) — VERBINDLICHE REGEL
+========================
+
+WICHTIGSTE REGEL:
+
+Wenn anhand des Headers eine TOTAL-SPALTE identifiziert wurde:
+
+- MUSS der Artikel-total_price aus genau diesem x_bucket stammen.
+- Werte aus anderen x_buckets dürfen NICHT als total_price gewählt werden.
+- Auch dann nicht, wenn sie monetär aussehen,
+  sauber formatiert sind oder isoliert stehen.
+
+AUSSCHLIESSLICH Werte aus der Total-Spalte sind zulässig.
+
+Vorgehen pro Artikelzeile:
+
+1. Prüfe, ob in der TOTAL-SPALTE ein monetärer Wert vorhanden ist.
+   - Der Wert kann auch Teil eines Textes sein (z. B. "6.05 1").
+2. Wenn ein plausibler Wert aus der Total-Spalte ableitbar ist:
+   - verwende diesen als total_price
+3. Wenn in der Total-Spalte kein eindeutiger monetärer Wert bestimmbar ist:
+   - total_price = null
+   - Artikel bleibt erhalten
+
+FALLBACK (NUR WENN KEINE TOTAL-SPALTE EXISTIERT):
+
+- Nur wenn KEINE eindeutige Total-Spalte aus dem Header ableitbar ist,
+  darf als Fallback der rechteste monetäre Wert der Zeile verwendet werden.
+
+========================
+4) QUANTITY (OPTIONAL)
+========================
+
+- Extrahiere quantity nur, wenn eindeutig erkennbar.
+- Wenn unklar oder nicht vorhanden:
+  - quantity = 1
+
+========================
+5) BELEGTOTAL
+========================
+
+- Bestimme den Gesamtbetrag des Belegs.
+- Bevorzuge Zeilen mit Begriffen wie:
+  "Total", "Total CHF", "Betrag", "Summe"
+- Ignoriere Zahlungsarten und Fremdwährungen.
+
+Wenn nicht eindeutig:
+- receipt_total = null
+
+========================
+KATEGORIEN
+========================
+
+Ordne jedem Artikel GENAU EINE Kategorie aus dieser Liste zu:
+{{ALLOWED_CATEGORIES}}
+
+========================
+HÄNDLER
+========================
+
+Wenn eindeutig einer dieser Händler passt:
+{{ALLOWED_MERCHANTS}}
+
+Sonst:
+- extrahiere einen sinnvollen Namen aus dem oberen Belegbereich.
+
+========================
+ANTWORTFORMAT
+========================
+
+ANTWORTE AUSSCHLIESSLICH MIT GÜLTIGEM JSON.
+
+{
+  "receipt": {
+    "merchant": "string",
+    "date": "YYYY-MM-DD oder DD.MM.YYYY",
+    "receipt_total": number oder null
+  },
+  "items": [
+    {
+      "name": "string",
+      "category": "string",
+      "quantity": number,
+      "total_price": number oder null,
+      "debug_chosen_total": "kurze Begründung der Preiswahl oder warum kein Preis gewählt wurde"
+    }
+  ]
+}

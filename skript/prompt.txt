@@ -1,0 +1,175 @@
+Du erhältst den Inhalt eines Kassenzettels als JSON.
+
+Das JSON ist eine rein geometrische Projektion des Belegs,
+erstellt aus OCR-Koordinaten.
+Es enthält KEINE vorab interpretierte Semantik.
+
+========================
+EINGABEFORMAT
+========================
+
+{
+  "x_buckets": [
+    { "x_bucket": <int>, "x_center": <number> }
+  ],
+  "rows": [
+    {
+      "row_id": <int>,
+      "y_center": <number>,
+      "cells": [
+        { "x_bucket": <int>, "text": <string> }
+      ]
+    }
+  ]
+}
+
+========================
+GRUNDREGELN
+========================
+
+Alle semantischen Entscheidungen müssen ausschließlich
+aus diesen Informationen abgeleitet werden:
+- Textinhalt
+- relative horizontale Position (x_bucket)
+- vertikale Reihenfolge (row_id / y_center)
+- Wiederholung über mehrere Zeilen
+
+ES IST VERBOTEN:
+- feste Spaltennamen anzunehmen
+- Werte aus „plausibleren“ Spalten zu übernehmen
+- Preise zu berechnen oder abzuleiten
+- fehlende Werte zu erzwingen
+
+Wenn ein Wert nicht eindeutig bestimmbar ist:
+→ lasse ihn LEER (null).
+
+========================
+1) HEADER-ANALYSE (GLOBAL)
+========================
+
+Analysiere die oberen Zeilen des Belegs.
+
+Ziel:
+- Erkennen, ob eine Headerzeile existiert
+- Falls ja:
+  - leite daraus die funktionale Bedeutung einzelner x_buckets ab
+
+Mögliche Rollen:
+- article
+- quantity
+- price_total
+- discount
+- unknown
+
+Die Header-Zuordnung ist für alle weiteren Schritte BINDEND.
+Wenn keine eindeutige Header-Zuordnung möglich ist:
+- arbeite rein geometrisch (Fallback-Regeln).
+
+========================
+2) ARTIKELZEILEN
+========================
+
+Artikelzeilen befinden sich unterhalb des Headers.
+Artikelzeilen dürfen NIEMALS verworfen werden.
+
+========================
+3) ARTIKELNAME
+========================
+
+Der Artikelname besteht aus ALLEN Textzellen einer Zeile,
+die links der ersten eindeutig monetären Spalte liegen
+ODER
+links der im Header erkannten quantity- oder price_total-Spalte.
+
+Der Artikelname darf niemals gekürzt werden.
+
+========================
+4) TOTAL_PRICE (ARTIKEL)
+========================
+
+Wenn im Header eine price_total-Spalte identifiziert wurde:
+- Der Artikel-total_price DARF NUR aus diesem x_bucket stammen.
+
+Genau ein monetärer Wert → übernehmen  
+Kein oder mehrere monetäre Werte → total_price = null
+
+Fallback nur wenn keine price_total-Spalte existiert:
+- rechtester monetärer Wert der Zeile
+
+========================
+5) QUANTITY (OPTIONAL)
+========================
+
+Quantity nur setzen, wenn eindeutig als Menge oder Gewicht erkennbar.
+Wenn unklar: quantity = 1
+
+========================
+6) HÄNDLER (WHITELIST)
+========================
+
+Erlaubte Händler sind ausschließlich:
+
+{{ALLOWED_MERCHANTS}}
+
+Regeln:
+- Wähle NUR einen Händler aus dieser Liste
+- Nur wenn eindeutig erkennbar
+- Wenn keiner eindeutig passt: merchant = null
+
+========================
+7) BELEGDATUM
+========================
+
+Bestimme das Belegdatum nur, wenn eindeutig erkennbar.
+Sonst: date = null
+
+========================
+8) KATEGORIEN (WHITELIST)
+========================
+
+Ordne jedem Artikel GENAU EINE Kategorie aus dieser Liste zu:
+
+{{ALLOWED_CATEGORIES}}
+
+Regeln:
+- Keine neuen Kategorien
+- Keine Mehrfachzuordnungen
+- Im Zweifel die inhaltlich nächstpassende Kategorie wählen
+
+========================
+9) DEBUG-PFLICHT
+========================
+
+Für JEDEN der folgenden Werte MUSS eine Debug-Begründung geliefert werden:
+- Artikelname
+- quantity
+- total_price
+- merchant
+- date
+
+========================
+AUSGABEFORMAT
+========================
+
+ANTWORTE AUSSCHLIESSLICH MIT GÜLTIGEM JSON.
+
+{
+  "receipt": {
+    "merchant": "string oder null",
+    "debug_merchant": "string",
+    "date": "string oder null",
+    "debug_date": "string",
+    "receipt_total": number oder null
+  },
+  "items": [
+    {
+      "name": "string",
+      "debug_article_name": "string",
+      "category": "string",
+      "quantity": number,
+      "debug_quantity": "string",
+      "total_price": number oder null,
+      "debug_chosen_total": "string"
+    }
+  ]
+}

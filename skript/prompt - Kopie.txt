@@ -1,0 +1,100 @@
+Du erhältst den ROHEN OCR-Debug-Text eines Kassenzettels.
+
+Jede Zeile hat das Format:
+Y=<vertikale Position> X=[<x_min>-<x_max>] <Text>
+
+Der Text ist NICHT vorverarbeitet.
+Die X-Positionen sind entscheidend.
+
+========================
+VERPFLICHTENDER ARBEITSABLAUF
+========================
+
+1) HEADER-ANALYSE (ZUERST)
+- Suche im oberen Bereich nach einer Kopfzeile wie:
+  "Artikelbezeichnung | Menge | Preis | Total"
+  "Bezeichnung | Betrag"
+- Wenn gefunden:
+  - merke dir die ungefähren X-Positionen der Spalten
+  - insbesondere der Spalte mit dem effektiven Artikelbetrag
+- Wenn kein Header klar erkennbar ist:
+  - gehe davon aus, dass die rechteste numerische Spalte pro Zeile
+    der effektive Artikelbetrag ist
+
+2) ARTIKELZEILEN
+- Artikelzeilen folgen unterhalb des Headers
+- Jede Artikelzeile enthält:
+  - Artikelnamen (links)
+  - optional eine Menge
+  - genau einen effektiven Artikelbetrag
+
+IGNORIERE:
+- Rabatte
+- Gespart
+- Aktionen
+- Rundungen
+- MWST
+- Zwischensummen
+- Zahlungsarten
+- Footer
+
+3) TOTAL_PRICE (HÖCHSTE PRIORITÄT)
+- Extrahiere pro Artikel GENAU EINEN Betrag:
+  - den effektiven Artikelbetrag
+- Bestimme ihn anhand:
+  - der Header-Spalte "Total"/"Betrag", oder
+  - ohne Header: rechteste Zahl der Zeile
+- Wenn der Betrag nicht eindeutig ist:
+  - lasse den Artikel weg
+
+4) QUANTITY (OPTIONAL)
+- Extrahiere quantity NUR wenn eindeutig
+- Wenn unklar:
+  - setze quantity = 1
+
+5) UNIT_PRICE
+- IGNORIERE unit_price KOMPLETT
+
+6) BELEGTOTAL
+- Extrahiere den finalen Gesamtbetrag des Belegs
+- Wenn nicht eindeutig:
+  - receipt_total = null
+
+========================
+KATEGORIEN
+========================
+Ordne jedem Artikel GENAU EINE Kategorie aus dieser Liste zu:
+{{ALLOWED_CATEGORIES}}
+
+========================
+HÄNDLER
+========================
+Wenn eindeutig einer dieser Händler passt, verwende GENAU diesen Namen:
+{{ALLOWED_MERCHANTS}}
+Sonst:
+- extrahiere einen sinnvollen Namen
+
+========================
+ANTWORTFORMAT (NUR JSON)
+========================
+
+ANTWORTE AUSSCHLIESSLICH MIT GÜLTIGEM JSON
+UND OHNE ZUSÄTZLICHEN TEXT.
+
+Das JSON MUSS exakt diese Struktur haben:
+
+{
+  "receipt": {
+    "merchant": "string",
+    "date": "YYYY-MM-DD oder DD.MM.YYYY",
+    "receipt_total": number oder null
+  },
+  "items": [
+    {
+      "name": "string",
+      "category": "string",
+      "quantity": number,
+      "total_price": number oder null
+    }
+  ]
+}

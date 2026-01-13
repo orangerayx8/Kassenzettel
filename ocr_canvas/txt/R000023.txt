@@ -1,0 +1,38 @@
+Y=474.0 X=[391-1136] MIGROS
+Y=627.2 X=[700-824] M Seon
+Y=729.9 X=[375-1123] Tel . 058 567 55 10 Genossenschaft Migros Aare Industriestrasse 20 , 3321 Schönbühl
+Y=873.2 X=[152-1376] Artikelbezeichnung Menge Preis Gespart Total #
+Y=959.0 X=[143-550] MBud Broccoli 750g
+Y=960.5 X=[677-707] 1
+Y=957.5 X=[870-956] 3.40
+Y=951.0 X=[1225-1381] 3.40 1
+Y=1011.5 X=[137-636] Thomy Senf mild 2x200g
+Y=1011.0 X=[873-964] 3.10
+Y=1004.0 X=[1231-1388] 3.10 1
+Y=1066.0 X=[130-584] MClass Wellenspätzli
+Y=1065.0 X=[874-964] 1.90
+Y=1058.2 X=[1239-1393] 1.90 1
+Y=1122.5 X=[124-695] Schweinsgeschnetzeltes 1
+Y=1121.0 X=[854-964] 16.25
+Y=1114.2 X=[1237-1397] 5.35 1
+Y=1178.5 X=[119-697] Schweinsgeschnetzeltes 1
+Y=1176.0 X=[854-966] 16.25
+Y=1170.5 X=[1242-1403] 4.90 1
+Y=1236.5 X=[116-397] Schnittlauch
+Y=1238.0 X=[676-697] 1
+Y=1233.5 X=[875-968] 2.40
+Y=1228.2 X=[1247-1407] 2.40 1
+Y=1295.5 X=[111-697] Bio Champignons braun 1
+Y=1288.8 X=[878-1417] 3.95 0.80 3.15 1
+Y=1416.0 X=[105-486] Sie sparen total
+Y=1410.5 X=[1070-1167] 0.80
+Y=1555.2 X=[99-527] Total CHF
+Y=1548.0 X=[1144-1375] 24.20
+Y=1663.0 X=[99-194] Visa
+Y=1724.0 X=[98-386] Total in EUR
+Y=1652.0 X=[1238-1355] 24.20
+Y=1709.0 X=[1237-1355] 26.89
+Y=1845.1 X=[399-1129] Buchung Visa Debit Contactless
+Y=1911.5 X=[394-793] XXXXXXXXXXXX7158
+Y=1978.0 X=[388-645] 29.11.2025
+Y=1970.0 X=[1027-1150] 15:55
